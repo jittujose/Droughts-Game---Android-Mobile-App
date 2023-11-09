@@ -54,22 +54,35 @@ fun ticTacToeView(game_state: MutableList<MutableList<Int>>,onAttemptMove:(x:Int
 
                 drawRect(color = color, topLeft = Offset(i * cell_width, j * cell_height), size = Size(cell_width, cell_height))
 
+
                 isBlack.value = !isBlack.value
             }
             isBlack.value = !isBlack.value
+        }
+        for(i in 0 until 8){
+            for (j in 0 until 8){
+                if (game_state[i][j]==3 || game_state[i][j]==5){
+                    drawRect(color = Color.Gray, topLeft = Offset((i) * cell_width, (j) * cell_height), size = Size(cell_width, cell_height))
+
+                }
+                if (game_state[i][j]==4){
+                    drawRect(color = Color.Yellow, topLeft = Offset((i) * cell_width, (j) * cell_height), size = Size(cell_width, cell_height))
+
+                }
+            }
         }
 
 
         //go through each cell in the board and draw relevant pieces
         for (i in 0 until 8){
             for (j in  0 until 8){
-                if (game_state[i][j] == 1){
+                if (game_state[i][j] == 1 || game_state[i][j] == 3){
                     withTransform({
                         translate(i*cell_width,j*cell_height)
                     }){
                         drawOval(color= Color.Green, topLeft = Offset(0.0f,0.0f),size = Size(cell_width,cell_height))
                     }
-                }else if(game_state[i][j] == 2){
+                }else if(game_state[i][j] == 2 || game_state[i][j]==5){
                     withTransform({
                         translate(i*cell_width,j*cell_height)
                     }){
