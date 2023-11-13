@@ -32,6 +32,8 @@ class MainActivity : ComponentActivity() {
                 Button(onClick = { resetGame() }) {
                     Text(text = "Reset game")
                 }
+                Text(text = "Score of Player 1: ${scorePlayer1.value}")
+                Text(text = "Score of Player 2: ${scorePlayer2.value}")
             }
         }
     }
@@ -42,46 +44,82 @@ class MainActivity : ComponentActivity() {
                 removeGrey(x,y)
                 array[x][y] = 3
                 removeYellow(x,y)
-                updateArray(4, x - 1, y - 1)
-                updateArray(4, x + 1, y - 1)
+                updateArray(4, x - 1, y - 1,1)
+                updateArray(4, x + 1, y - 1,2)
 
             } else if (array[x][y] == 4) {  //checking it is yellow
-                if(x+1<8 && y+1<8)
+                if(x+1<8 && y+1<8){
                 if (array[x + 1][y + 1] == 3 ) { //checking gray is right side down or not
-                    updateArray(1, x, y)
-                    updateArray(0, x + 1, y + 1)
+                    updateArray(1, x, y,0)
+                    updateArray(0, x + 1, y + 1,0)
+                }       //catching enemy
+                    if (x+2<8 && y+2<8)
+                    if (array[x + 1][y + 1] == 2 && array[x+2][y+2]==3) { //checking enemy(red) and grey is right side down or not
+                        updateArray(1, x, y,0)
+                        updateArray(0, x + 1, y + 1,0)
+                        updateArray(0,x+2,y+2,0)
+                        scorePlayer1.value = scorePlayer1.value+1
+                    }
                 }
-                if(x-1>=0 && y+1<8)
+                if(x-1>=0 && y+1<8){
                 if (array[x - 1][y + 1] == 3) {  //checking gray is left side down or not
-                    updateArray(1, x, y)
-                    updateArray(0, x - 1, y + 1)
+                    updateArray(1, x, y,0)
+                    updateArray(0, x - 1, y + 1,0)
 
+                }   //catching enemy
+                    if(x-2>=0 && y+2<8)
+                    if (array[x - 1][y + 1] == 2 && array[x-2][y+2]==3) {  //checking enemy(red) and grey is left side down or not
+                        updateArray(1, x, y,0)
+                        updateArray(0, x - 1, y + 1,0)
+                        updateArray(0,x-2,y+2,0)
+                        scorePlayer1.value = scorePlayer1.value+1
+                    }
                 }
                 removeYellow(x,y)
                 removeGrey(x,y)
                 player.value=2
             }
 
+
+
     }else{  //Movements for player 2
             if (array[x][y] == 2) {
                 removeGrey(x,y)
                 array[x][y] = 5
                 removeYellow(x,y)
-                updateArray(4, x - 1, y + 1)
-                updateArray(4, x + 1, y + 1)
+                updateArray(4, x - 1, y + 1,3)
+                updateArray(4, x + 1, y + 1,4)
 
             } else if (array[x][y] == 4) {  //checkking it is yellow
-                if(x+1<8 && y+1<8)
+                if(x+1<8 && y+1<8) {
                     if (array[x + 1][y - 1] == 5 ) { //checking gray is right side up or not
-                        updateArray(2, x, y)
-                        updateArray(0, x + 1, y - 1)
+                        updateArray(2, x, y,0)
+                        updateArray(0, x + 1, y - 1,0)
                     }
-                if(x-1>=0 && y+1<8)
+                    //catching enemy
+                    if (x+2<8 && y-2>0)
+                    if (array[x + 1][y - 1] == 1 && array[x+2][y-2]==5) { //checking enemy(green) and grey is right side up or not
+                        updateArray(2, x, y,0)
+                        updateArray(0, x + 1, y - 1,0)
+                        updateArray(0,x+2,y-2,0)
+                        scorePlayer2.value=scorePlayer2.value+1
+                    }
+                }
+                if(x-1>=0 && y+1<8){
                     if (array[x - 1][y - 1] == 5) {  //checking gray is left side up or not
-                        updateArray(2, x, y)
-                        updateArray(0, x - 1, y - 1)
+                        updateArray(2, x, y,0)
+                        updateArray(0, x - 1, y - 1,0)
 
                     }
+                    //catching enemy
+                    if (x-2>0 && y-2>0)
+                    if (array[x - 1][y - 1] == 1 && array[x-2][y-2]==5) {  //checking enemy(green) and grey is left side up or not
+                        updateArray(2, x, y,0)
+                        updateArray(0, x - 1, y - 1,0)
+                        updateArray(0,x-2,y-2,0)
+                        scorePlayer2.value=scorePlayer2.value+1
+                    }
+                }
                 removeYellow(x,y)
                 removeGrey(x,y)
                 player.value=1
@@ -111,6 +149,8 @@ class MainActivity : ComponentActivity() {
         //reset the player and the string
         player.value=1
         game_status.value = "current player is 1"
+        scorePlayer1.value=0
+        scorePlayer2.value=0
     }
 
     //helper function that will update the game status
@@ -122,15 +162,30 @@ class MainActivity : ComponentActivity() {
     }
 
     //function to update array for the movement
-    fun updateArray(value: Int, i: Int, j: Int) {
+    fun updateArray(value: Int, i: Int, j: Int,m:Int
+    ) {
         if (i in 0 until 8 && j in 0 until 8) {
             if(value ==4) {
                 if (array[i][j] == 0) {
                     array[i][j] = value
                 }
 
-            }else{
+            }else
+            {
             array[i][j] = value }
+            //code for setting yellow to  catch enemy
+            if(array[i][j]==2 && m==1){     //for player 1
+                updateArray(4,i-1,j-1,0)
+            }
+            if(array[i][j]==2 && m==2){     //for player 1
+                updateArray(4,i+1,j-1,0)
+            }
+            if(array[i][j]==1 && m==3){     //for player 2
+                updateArray(4,i-1,j+1,0)
+            }
+            if(array[i][j]==1 && m==4){     //for player 2
+                updateArray(4,i+1,j+1,0)
+            }
 
         }
     }
@@ -159,6 +214,7 @@ class MainActivity : ComponentActivity() {
     }
 
 
+
     //array contain tictocview state
     var array = mutableStateListOf<MutableList<Int>>(
         mutableStateListOf(0,2,0,0,0,1,0,1),mutableStateListOf(2,0,2,0,0,0,1,0),
@@ -172,4 +228,6 @@ class MainActivity : ComponentActivity() {
     private var game_status = mutableStateOf("current player is 1")
 
     var indicator= mutableStateOf(true)
+    var scorePlayer1= mutableStateOf(0)
+    var scorePlayer2= mutableStateOf(0)
 }
