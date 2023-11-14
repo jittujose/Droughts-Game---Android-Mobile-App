@@ -91,13 +91,13 @@ class MainActivity : ComponentActivity() {
                 updateArray(4, x + 1, y + 1,4)
 
             } else if (array[x][y] == 4) {  //checkking it is yellow
-                if(x+1<8 && y+1<8) {
+                if(x+1<8 && y-1>=0) {
                     if (array[x + 1][y - 1] == 5 ) { //checking gray is right side up or not
                         updateArray(2, x, y,0)
                         updateArray(0, x + 1, y - 1,0)
                     }
                     //catching enemy
-                    if (x+2<8 && y-2>0)
+                    if (x+2<8 && y-2>=0)
                     if (array[x + 1][y - 1] == 1 && array[x+2][y-2]==5) { //checking enemy(green) and grey is right side up or not
                         updateArray(2, x, y,0)
                         updateArray(0, x + 1, y - 1,0)
@@ -105,14 +105,14 @@ class MainActivity : ComponentActivity() {
                         scorePlayer2.value=scorePlayer2.value+1
                     }
                 }
-                if(x-1>=0 && y+1<8){
+                if(x-1>=0 && y-1>=0){
                     if (array[x - 1][y - 1] == 5) {  //checking gray is left side up or not
                         updateArray(2, x, y,0)
                         updateArray(0, x - 1, y - 1,0)
 
                     }
                     //catching enemy
-                    if (x-2>0 && y-2>0)
+                    if (x-2>=0 && y-2>=0)
                     if (array[x - 1][y - 1] == 1 && array[x-2][y-2]==5) {  //checking enemy(green) and grey is left side up or not
                         updateArray(2, x, y,0)
                         updateArray(0, x - 1, y - 1,0)
