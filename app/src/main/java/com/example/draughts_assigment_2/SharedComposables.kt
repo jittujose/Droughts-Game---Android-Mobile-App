@@ -61,7 +61,7 @@ fun ticTacToeView(game_state: MutableList<MutableList<Int>>,onAttemptMove:(x:Int
         }
         for(i in 0 until 8){
             for (j in 0 until 8){
-                if (game_state[i][j]==3 || game_state[i][j]==5){
+                if (game_state[i][j]==3 || game_state[i][j]==5 || game_state[i][j] == 8 || game_state[i][j]==9 ){
                     drawRect(color = Color.Gray, topLeft = Offset((i) * cell_width, (j) * cell_height), size = Size(cell_width, cell_height))
 
                 }
@@ -87,6 +87,38 @@ fun ticTacToeView(game_state: MutableList<MutableList<Int>>,onAttemptMove:(x:Int
                         translate(i*cell_width,j*cell_height)
                     }){
                         drawOval(color= Color.Red, topLeft = Offset(0.0f,0.0f),size = Size(cell_width,cell_height))
+                    }
+                }else if (game_state[i][j] == 6 || game_state[i][j]==8){
+                    withTransform({
+                        translate(i * cell_width, j * cell_height)
+                    }) {
+                        drawOval(color = Color.Yellow, topLeft = Offset(0.0f, 0.0f), size = Size(cell_width, cell_height))
+
+                        // Drawing the yellow circle inside the green oval
+                        val goldenCircleSize = 0.8f // Adjust this ratio to fit the circle inside the oval
+                        val goldenCircleOffsetX = (cell_width * (1 - goldenCircleSize)) / 2
+                        val goldenCircleOffsetY = (cell_height * (1 - goldenCircleSize)) / 2
+                        drawOval(
+                            color = Color.Green,
+                            topLeft = Offset(goldenCircleOffsetX, goldenCircleOffsetY),
+                            size = Size(cell_width * goldenCircleSize, cell_height * goldenCircleSize)
+                        )
+                    }
+                }else if (game_state[i][j] == 7 || game_state[i][j]==9){
+                    withTransform({
+                        translate(i * cell_width, j * cell_height)
+                    }) {
+                        drawOval(color = Color.Yellow, topLeft = Offset(0.0f, 0.0f), size = Size(cell_width, cell_height))
+
+                        // Drawing the yellow circle inside the red oval
+                        val goldenCircleSize = 0.8f // Adjust this ratio to fit the circle inside the oval
+                        val goldenCircleOffsetX = (cell_width * (1 - goldenCircleSize)) / 2
+                        val goldenCircleOffsetY = (cell_height * (1 - goldenCircleSize)) / 2
+                        drawOval(
+                            color = Color.Red,
+                            topLeft = Offset(goldenCircleOffsetX, goldenCircleOffsetY),
+                            size = Size(cell_width * goldenCircleSize, cell_height * goldenCircleSize)
+                        )
                     }
                 }
             }
