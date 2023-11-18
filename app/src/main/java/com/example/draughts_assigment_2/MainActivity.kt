@@ -140,28 +140,28 @@ class MainActivity : ComponentActivity() {
             {
             array[i][j] = value }
             //code for setting yellow to  catch enemy
-            if(array[i][j]==2 && m==1){     //for player 1
+            if((array[i][j]==2 ||array[i][j]==7) && m==1){     //for player 1
                 updateArray(4,i-1,j-1,0)
             }
-            if(array[i][j]==2 && m==2){     //for player 1
+            if((array[i][j]==2 || array[i][j]==7) && m==2){     //for player 1
                 updateArray(4,i+1,j-1,0)
             }
-            if(array[i][j]==1 && m==3){     //for player 2
+            if((array[i][j]==1 || array[i][j]==6) && m==3){     //for player 2
                 updateArray(4,i-1,j+1,0)
             }
-            if(array[i][j]==1 && m==4){     //for player 2
+            if((array[i][j]==1 || array[i][j]==6) && m==4){     //for player 2
                 updateArray(4,i+1,j+1,0)
             }
-            if(array[i][j]==2 && m==5){    //for player 1 king
+            if((array[i][j]==2 || array[i][j]==7) && m==5){    //for player 1 king
                 updateArray(4,i-1,j+1,0)
             }
-            if(array[i][j]==2 && m==6){    //for player 1 king
+            if((array[i][j]==2 || array[i][j]==7) && m==6){    //for player 1 king
                 updateArray(4,i+1,j+1,0)
             }
-            if(array[i][j]==1 && m==7){     //for player 2 king
+            if((array[i][j]==1 || array[i][j]==6) && m==7){     //for player 2 king
                 updateArray(4,i-1,j-1,0)
             }
-            if(array[i][j]==1 && m==8){     //for player 2 king
+            if((array[i][j]==1 || array[i][j]==6) && m==8){     //for player 2 king
                 updateArray(4,i+1,j-1,0)
             }
 
@@ -205,7 +205,7 @@ class MainActivity : ComponentActivity() {
             }
             //catching enemy
             if (x+2<8 && y+2<8)
-                if (array[x + 1][y + 1] == 2 && array[x+2][y+2]==3) { //checking enemy(red) and grey is right side down or not
+                if ((array[x + 1][y + 1] == 2 || array[x+1][y+1]==7) && (array[x+2][y+2]==3)) { //checking enemy(red) and grey is right side down or not
                     updateArray(1, x, y,0)
                     updateArray(0, x + 1, y + 1,0)
                     updateArray(0,x+2,y+2,0)
@@ -220,7 +220,7 @@ class MainActivity : ComponentActivity() {
 
             }   //catching enemy
             if(x-2>=0 && y+2<8)
-                if (array[x - 1][y + 1] == 2 && array[x-2][y+2]==3) {  //checking enemy(red) and grey is left side down or not
+                if ((array[x - 1][y + 1] == 2 || array[x-1][y+1]==7) && (array[x-2][y+2]==3)) {  //checki || array[)[n==9g enemy(red) and grey is left side down or not
                     updateArray(1, x, y,0)
                     updateArray(0, x - 1, y + 1,0)
                     updateArray(0,x-2,y+2,0)
@@ -228,7 +228,7 @@ class MainActivity : ComponentActivity() {
                     captureFlag.value=true
                 }
         }
-        //yellowExtraMovesKingPlayer1(x,y)
+        yellowExtraMovesKingPlayer(x,y,6,8,2)
         removeYellow(x,y)
         removeGrey(x,y)
         chainFlag.value=true
@@ -262,7 +262,7 @@ class MainActivity : ComponentActivity() {
             }
             //catching enemy
             if (x+2<8 && y-2>=0)
-                if (array[x + 1][y - 1] == 1 && array[x+2][y-2]==5) { //checking enemy(green) and grey is right side up or not
+                if ((array[x + 1][y - 1] == 1|| array[x+1][y-1]==6) && (array[x+2][y-2]==5)) { //checking enemy(green) and grey is right side up or not
                     updateArray(2, x, y,0)
                     updateArray(0, x + 1, y - 1,0)
                     updateArray(0,x+2,y-2,0)
@@ -278,7 +278,7 @@ class MainActivity : ComponentActivity() {
             }
             //catching enemy
             if (x-2>=0 && y-2>=0)
-                if (array[x - 1][y - 1] == 1 && array[x-2][y-2]==5) {  //checking enemy(green) and grey is left side up or not
+                if ((array[x - 1][y - 1] == 1|| array[x-1][y-1]==6) && (array[x-2][y-2]==5)) {  //checking enemy(green) and grey is left side up or not
                     updateArray(2, x, y,0)
                     updateArray(0, x - 1, y - 1,0)
                     updateArray(0,x-2,y-2,0)
@@ -286,6 +286,7 @@ class MainActivity : ComponentActivity() {
                     captureFlag.value=true
                 }
         }
+        yellowExtraMovesKingPlayer(x,y,7,9,1)
         removeYellow(x,y)
         removeGrey(x,y)
         //Chaining
@@ -311,108 +312,43 @@ class MainActivity : ComponentActivity() {
         player.value=1}
     }
 
-    fun yellowExtraMovesKingPlayer1(x : Int,y: Int){
+    fun yellowExtraMovesKingPlayer(x : Int,y: Int,king: Int,gray: Int, enemy: Int){
+        var kingEnemy= mutableStateOf(0)
+        if(enemy==2){
+             kingEnemy.value=7
+        }else if(enemy==1){
+            kingEnemy.value=8
+        }
         if(x+1<8 && y+1<8){
-            if (array[x + 1][y + 1] == 8 ) { //checking gray is right side down or not
-                updateArray(6, x, y,0)
+            if (array[x + 1][y + 1] == gray ) { //checking gray king is right side down or not
+                updateArray(king, x, y,0)
                 updateArray(0, x + 1, y + 1,0)
             }
-            //catching enemy
-            if (x+2<8 && y+2<8)
-                if (array[x + 1][y + 1] == 2 && array[x+2][y+2]==8) { //checking enemy(red) and grey is right side down or not
-                    updateArray(6, x, y,0)
-                    updateArray(0, x + 1, y + 1,0)
-                    updateArray(0,x+2,y+2,0)
-                    scorePlayer1.value = scorePlayer1.value+1
-                    captureFlag.value=true
-                }
+
         }
         if(x-1>=0 && y+1<8){
-            if (array[x - 1][y + 1] == 8) {  //checking gray is left side down or not
-                updateArray(6, x, y,0)
+            if (array[x - 1][y + 1] == gray) {  //checking gray is left side down or not
+                updateArray(king, x, y,0)
                 updateArray(0, x - 1, y + 1,0)
 
-            }   //catching enemy
-            if(x-2>=0 && y+2<8)
-                if (array[x - 1][y + 1] == 2 && array[x-2][y+2]==8) {  //checking enemy(red) and grey is left side down or not
-                    updateArray(6, x, y,0)
-                    updateArray(0, x - 1, y + 1,0)
-                    updateArray(0,x-2,y+2,0)
-                    scorePlayer1.value = scorePlayer1.value+1
-                    captureFlag.value=true
-                }
+            }
         }
-        ///////////
         if(x+1<8 && y-1>=0) {
-            if (array[x + 1][y - 1] == 8 ) { //checking gray is right side up or not
-                updateArray(6, x, y,0)
+            if (array[x + 1][y - 1] == gray ) { //checking gray is right side up or not
+                updateArray(king, x, y,0)
                 updateArray(0, x + 1, y - 1,0)
             }
-            //catching enemy
-            if (x+2<8 && y-2>=0)
-                if (array[x + 1][y - 1] == 2 && array[x+2][y-2]==8) { //checking enemy(green) and grey is right side up or not
-                    updateArray(6, x, y,0)
-                    updateArray(0, x + 1, y - 1,0)
-                    updateArray(0,x+2,y-2,0)
-                    scorePlayer2.value=scorePlayer2.value+1
-                    captureFlag.value=true
-                }
+
         }
         if(x-1>=0 && y-1>=0){
-            if (array[x - 1][y - 1] == 8) {  //checking gray is left side up or not
-                updateArray(6, x, y,0)
+            if (array[x - 1][y - 1] == gray) {  //checking gray is left side up or not
+                updateArray(king, x, y,0)
                 updateArray(0, x - 1, y - 1,0)
 
             }
-            //catching enemy
-            if (x-2>=0 && y-2>=0)
-                if (array[x - 1][y - 1] == 2 && array[x-2][y-2]==8) {  //checking enemy(green) and grey is left side up or not
-                    updateArray(6, x, y,0)
-                    updateArray(0, x - 1, y - 1,0)
-                    updateArray(0,x-2,y-2,0)
-                    scorePlayer2.value=scorePlayer2.value+1
-                    captureFlag.value=true
-                }
-        }
-        //////////
-        removeYellow(x,y)
-        removeGrey(x,y)
-        chainFlag.value=true
-        if(x+2<8 && y-2>=0 && captureFlag.value){ //chaining catch right move
-            if(array[x+1][y-1]==2 && array[x+2][y-2]==0){
-                chainFlag.value=false
-                array[x][y]=8
-                array[x+2][y-2]=4
 
-            }
         }
-        if(x-2>=0 && y-2>=0 && captureFlag.value){ //chaining catch left move
-            if(array[x-1][y-1]==2 && array[x-2][y-2]==0){
-                chainFlag.value=false
-                array[x][y]=8
-                array[x-2][y-2]=4
 
-            }
-        }
-        if(x+2<8 && y+2<8 && captureFlag.value){ //chaining catch right move
-            if(array[x+1][y+1]==2 && array[x+2][y+2]==0){
-                chainFlag.value=false
-                array[x][y]=8
-                array[x+2][y+2]=4
-
-            }
-        }
-        if(x-2>=0 && y+2<8 && captureFlag.value){ //chaining catch left move
-            if(array[x-1][y+1]==1 && array[x-2][y+2]==0){
-                chainFlag.value=false
-                array[x][y]=8
-                array[x-2][y+2]=4
-
-            }
-        }
-        captureFlag.value=false
-        if (chainFlag.value){
-            player.value=2}
     }
 
 
