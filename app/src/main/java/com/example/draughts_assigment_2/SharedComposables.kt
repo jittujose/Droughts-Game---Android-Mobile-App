@@ -23,7 +23,7 @@ import kotlin.math.floor
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ticTacToeView(game_state: MutableList<MutableList<Int>>,onAttemptMove:(x:Int,y:Int) ->Unit){
+fun draughtsView(game_state: MutableList<MutableList<Int>>,onAttemptMove:(x:Int,y:Int) ->Unit){
     var width by remember { mutableStateOf(0.0f) }
     var height by remember { mutableStateOf(0.0f) }
     var cell_width by remember { mutableStateOf(0.0f) }

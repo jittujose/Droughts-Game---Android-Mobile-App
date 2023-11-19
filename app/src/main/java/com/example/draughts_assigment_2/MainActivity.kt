@@ -6,14 +6,21 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 
 
 class MainActivity : ComponentActivity() {
@@ -24,16 +31,60 @@ class MainActivity : ComponentActivity() {
             Column(Modifier
                 .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally) {
-                ticTacToeView(game_state = array){x,y ->
+                draughtsView(game_state = array){x,y ->
                     placePiece(x,y)
                     updateGameStatus()
                 }
                 Text(text = "current player is ${player.value}")
+                if (player.value==1){
+                    Button(onClick = { /*TODO*/ },
+                        modifier = Modifier.clip(CircleShape)
+                            .size(46.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Green,
+                            contentColor = Color.White
+                        )
+                    ) {
+
+                    }
+                }else{
+                    Button(onClick = { /*TODO*/ },
+                        modifier = Modifier.clip(CircleShape)
+                            .size(46.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Red,
+                            contentColor = Color.White
+                        )
+                    ) {
+
+                    }
+                }
                 Button(onClick = { resetGame() }) {
                     Text(text = "Reset game")
                 }
-                Text(text = "Score of Player 1: ${scorePlayer1.value}")
-                Text(text = "Score of Player 2: ${scorePlayer2.value}")
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Button(onClick = { /*TODO*/ },
+                        modifier = Modifier.clip(CircleShape)
+                            .size(46.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Green,
+                            contentColor = Color.White
+                        )
+                    ) {}
+                    Text(text = "Score of Player 1: ${scorePlayer1.value}")
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Button(onClick = { /*TODO*/ },
+                        modifier = Modifier.clip(CircleShape)
+                            .size(46.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Red,
+                            contentColor = Color.White
+                        )
+                    ) {}
+                    Text(text = "Score of Player 2: ${scorePlayer2.value}")
+                }
+
             }
         }
     }
@@ -252,6 +303,7 @@ class MainActivity : ComponentActivity() {
         chainingKing(x,y,6,8,2)
 
         captureFlag.value=false
+        captureFlagKing.value=false
         if (chainFlag.value){
         player.value=2}
     }
@@ -313,6 +365,7 @@ class MainActivity : ComponentActivity() {
         }
         chainingKing(x,y,7,9,1)
         captureFlag.value=false
+        captureFlagKing.value=false
         if (chainFlag.value){
         player.value=1}
     }
@@ -361,7 +414,7 @@ class MainActivity : ComponentActivity() {
                 updateArray(0, x + 1, y + 1,0)
                 updateArray(0,x+2,y+2,0)
                 score.value=1
-                captureFlag.value=true
+                captureFlagKing.value=true
             }
         //catching enemy
         if(x-2>=0 && y+2<8)
@@ -370,7 +423,7 @@ class MainActivity : ComponentActivity() {
                 updateArray(0, x - 1, y + 1,0)
                 updateArray(0,x-2,y+2,0)
                 score.value=1
-                captureFlag.value=true
+                captureFlagKing.value=true
             }
         //catching enemy
         if (x+2<8 && y-2>=0)
@@ -379,7 +432,7 @@ class MainActivity : ComponentActivity() {
                 updateArray(0, x + 1, y - 1,0)
                 updateArray(0,x+2,y-2,0)
                 score.value=1
-                captureFlag.value=true
+                captureFlagKing.value=true
             }
         //catching enemy
         if (x-2>=0 && y-2>=0)
@@ -388,7 +441,7 @@ class MainActivity : ComponentActivity() {
                 updateArray(0, x - 1, y - 1,0)
                 updateArray(0,x-2,y-2,0)
                 score.value=1
-                captureFlag.value=true
+                captureFlagKing.value=true
             }
         if (king==6 && score.value==1){
             scorePlayer1.value=scorePlayer1.value+1
@@ -407,7 +460,7 @@ fun chainingKing(x : Int,y: Int,king: Int,gray: Int, enemy: Int){
         kingEnemy.value=6
     }
     //chaining
-    if(x+2<8 && y-2>=0 && captureFlag.value){ //chaining catch right move
+    if(x+2<8 && y-2>=0 && captureFlagKing.value){ //chaining catch right move
         if((array[x+1][y-1]==enemy || array[x+1][y-1]==kingEnemy.value) && array[x+2][y-2]==0){
             chainFlag.value=false
             array[x][y]=gray
@@ -415,7 +468,7 @@ fun chainingKing(x : Int,y: Int,king: Int,gray: Int, enemy: Int){
 
         }
     }
-    if(x-2>=0 && y-2>=0 && captureFlag.value){ //chaining catch left move
+    if(x-2>=0 && y-2>=0 && captureFlagKing.value){ //chaining catch left move
         if((array[x-1][y-1]==enemy || array[x-1][y-1]==kingEnemy.value) && array[x-2][y-2]==0){
             chainFlag.value=false
             array[x][y]=gray
@@ -423,7 +476,7 @@ fun chainingKing(x : Int,y: Int,king: Int,gray: Int, enemy: Int){
 
         }
     }
-    if(x+2<8 && y+2<8 && captureFlag.value){ //chaining catch right move
+    if(x+2<8 && y+2<8 && captureFlagKing.value){ //chaining catch right move
         if((array[x+1][y+1]==enemy || array[x+1][y+1]==kingEnemy.value) && array[x+2][y+2]==0){
             chainFlag.value=false
             array[x][y]=gray
@@ -431,7 +484,7 @@ fun chainingKing(x : Int,y: Int,king: Int,gray: Int, enemy: Int){
 
         }
     }
-    if(x-2>=0 && y+2<8 && captureFlag.value){ //chaining catch left move
+    if(x-2>=0 && y+2<8 && captureFlagKing.value){ //chaining catch left move
         if((array[x-1][y+1]==enemy || array[x-1][y+1]==kingEnemy.value) && array[x-2][y+2]==0){
             chainFlag.value=false
             array[x][y]=gray
@@ -444,8 +497,7 @@ fun chainingKing(x : Int,y: Int,king: Int,gray: Int, enemy: Int){
 
 
 
-
-    //array contain tictocview state
+    //array contain draughts view state
     var array = mutableStateListOf<MutableList<Int>>(
         mutableStateListOf(0,2,0,0,0,1,0,1),mutableStateListOf(2,0,2,0,0,0,1,0),
         mutableStateListOf(0,2,0,0,0,1,0,1),mutableStateListOf(2,0,2,0,0,0,1,0),
@@ -457,8 +509,9 @@ fun chainingKing(x : Int,y: Int,king: Int,gray: Int, enemy: Int){
     //the string that is played after every player move
     private var game_status = mutableStateOf("current player is 1")
 
-    var captureFlag= mutableStateOf(false)
-    var chainFlag= mutableStateOf(true)
-    var scorePlayer1= mutableStateOf(0)
-    var scorePlayer2= mutableStateOf(0)
+    var captureFlag= mutableStateOf(false) //it is used for apply chaining
+    var captureFlagKing= mutableStateOf(false) //it is used for apply chaining for king
+    var chainFlag= mutableStateOf(true)   //it is used in chaining
+    var scorePlayer1= mutableStateOf(0)    //score of player one
+    var scorePlayer2= mutableStateOf(0)    //score of player 2
 }
