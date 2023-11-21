@@ -1,9 +1,12 @@
 package com.example.draughts_assigment_2
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,10 +31,20 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            var launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()){
+                cellColour1.value=it.data?.getStringExtra("cellColour1").toString()
+                cellColour2.value=it.data?.getStringExtra("cellColour2").toString()
+                playerColour1.value=it.data?.getStringExtra("playerColour1").toString()
+                playerColour2.value=it.data?.getStringExtra("playerColour2").toString()
+            }
+            var cell1Colour= getColorFromString(cellColour1.value)
+            var cell2Colour= getColorFromString(cellColour2.value)
+            var player1Colour = getColorFromString(playerColour1.value)
+            var player2Colour = getColorFromString(playerColour2.value)
             Column(Modifier
                 .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally) {
-                draughtsView(game_state = array){x,y ->
+                draughtsView(game_state = array,cell1Colour,cell2Colour,player1Colour,player2Colour){x,y ->
                     placePiece(x,y)
                     updateGameStatus()
                 }
@@ -41,7 +54,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.clip(CircleShape)
                             .size(46.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Green,
+                            containerColor = player1Colour,
                             contentColor = Color.White
                         )
                     ) {
@@ -52,7 +65,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.clip(CircleShape)
                             .size(46.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Red,
+                            containerColor = player2Colour,
                             contentColor = Color.White
                         )
                     ) {
@@ -62,12 +75,37 @@ class MainActivity : ComponentActivity() {
                 Button(onClick = { resetGame() }) {
                     Text(text = "Reset game")
                 }
+                if(scorePlayer1.value==12){
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Button(onClick = { /*TODO*/ },
+                            modifier = Modifier.clip(CircleShape)
+                                .size(46.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = player1Colour,
+                                contentColor = Color.White
+                            )
+                        ) {}
+                        Text(text = "Player 1 Won")
+                    }
+                }else if(scorePlayer2.value==12){
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Button(onClick = { /*TODO*/ },
+                            modifier = Modifier.clip(CircleShape)
+                                .size(46.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = player2Colour,
+                                contentColor = Color.White
+                            )
+                        ) {}
+                        Text(text = "Player 2 Won")
+                    }
+                }else{
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Button(onClick = { /*TODO*/ },
                         modifier = Modifier.clip(CircleShape)
                             .size(46.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Green,
+                            containerColor = player1Colour,
                             contentColor = Color.White
                         )
                     ) {}
@@ -78,11 +116,15 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.clip(CircleShape)
                             .size(46.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Red,
+                            containerColor = player2Colour,
                             contentColor = Color.White
                         )
                     ) {}
                     Text(text = "Score of Player 2: ${scorePlayer2.value}")
+                }}
+                Button(onClick = { launcher.launch(createIntentSettingsActivity()) }
+                    ) {
+                    Text(text = "Settings")
                 }
 
             }
@@ -289,7 +331,7 @@ class MainActivity : ComponentActivity() {
                 chainFlag.value=false
                 array[x][y]=3
                 array[x+2][y-2]=4
-
+                placePiece(x+2,y-2)
             }
         }
         if(x-2>=0 && y-2>=0 && captureFlag.value){ //chaining catch left move
@@ -297,7 +339,7 @@ class MainActivity : ComponentActivity() {
                 chainFlag.value=false
                 array[x][y]=3
                 array[x-2][y-2]=4
-
+                placePiece(x-2,y-2)
             }
         }
         chainingKing(x,y,6,8,2)
@@ -352,7 +394,7 @@ class MainActivity : ComponentActivity() {
                 chainFlag.value=false
                 array[x][y]=5
                 array[x+2][y+2]=4
-
+                placePiece(x+2,y+2)
             }
         }
         if(x-2>=0 && y+2<8 && captureFlag.value){ //chaining catch left move
@@ -360,7 +402,7 @@ class MainActivity : ComponentActivity() {
                 chainFlag.value=false
                 array[x][y]=5
                 array[x-2][y+2]=4
-
+                placePiece(x-2,y+2)
             }
         }
         chainingKing(x,y,7,9,1)
@@ -465,7 +507,7 @@ fun chainingKing(x : Int,y: Int,king: Int,gray: Int, enemy: Int){
             chainFlag.value=false
             array[x][y]=gray
             array[x+2][y-2]=4
-
+            placePiece(x+2,y-2)
         }
     }
     if(x-2>=0 && y-2>=0 && captureFlagKing.value){ //chaining catch left move
@@ -473,7 +515,7 @@ fun chainingKing(x : Int,y: Int,king: Int,gray: Int, enemy: Int){
             chainFlag.value=false
             array[x][y]=gray
             array[x-2][y-2]=4
-
+            placePiece(x-2,y-2)
         }
     }
     if(x+2<8 && y+2<8 && captureFlagKing.value){ //chaining catch right move
@@ -481,7 +523,7 @@ fun chainingKing(x : Int,y: Int,king: Int,gray: Int, enemy: Int){
             chainFlag.value=false
             array[x][y]=gray
             array[x+2][y+2]=4
-
+            placePiece(x+2,y+2)
         }
     }
     if(x-2>=0 && y+2<8 && captureFlagKing.value){ //chaining catch left move
@@ -489,7 +531,7 @@ fun chainingKing(x : Int,y: Int,king: Int,gray: Int, enemy: Int){
             chainFlag.value=false
             array[x][y]=gray
             array[x-2][y+2]=4
-
+            placePiece(x-2,y+2)
         }
     }
 
@@ -514,4 +556,27 @@ fun chainingKing(x : Int,y: Int,king: Int,gray: Int, enemy: Int){
     var chainFlag= mutableStateOf(true)   //it is used in chaining
     var scorePlayer1= mutableStateOf(0)    //score of player one
     var scorePlayer2= mutableStateOf(0)    //score of player 2
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createIntentSettingsActivity(): Intent {
+        var intent: Intent = Intent(this,SettingsActivity::class.java)
+        return intent
+    }
+    var cellColour1 = mutableStateOf("Black")
+    var cellColour2 = mutableStateOf("White")
+    var playerColour1 = mutableStateOf("Green")
+    var playerColour2 = mutableStateOf("Red")
+}
+fun getColorFromString(colorString: String): Color {
+    return when (colorString) {
+        "Red" -> Color.Red
+        "Blue" -> Color.Blue
+        "Green" -> Color.Green
+        "White" -> Color.White
+        "Cyan" -> Color.Cyan
+        "Magenta" -> Color.Magenta
+        "DarkGray" ->Color.DarkGray
+        "Black" -> Color.Black
+        else -> Color.Black // Default color if the string doesn't match
+    }
 }

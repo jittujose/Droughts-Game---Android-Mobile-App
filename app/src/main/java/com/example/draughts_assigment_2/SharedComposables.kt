@@ -23,12 +23,14 @@ import kotlin.math.floor
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun draughtsView(game_state: MutableList<MutableList<Int>>,onAttemptMove:(x:Int,y:Int) ->Unit){
+fun draughtsView(game_state: MutableList<MutableList<Int>>,cell1Color: Color,cell2Color: Color,player1Color: Color,player2Color: Color,onAttemptMove:(x:Int,y:Int) ->Unit){
     var width by remember { mutableStateOf(0.0f) }
     var height by remember { mutableStateOf(0.0f) }
     var cell_width by remember { mutableStateOf(0.0f) }
     var cell_height by remember { mutableStateOf(0.0f) }
     var isBlack = remember { mutableStateOf(false) }
+
+
 
     Canvas(modifier = Modifier
         .padding(5.dp)
@@ -50,7 +52,7 @@ fun draughtsView(game_state: MutableList<MutableList<Int>>,onAttemptMove:(x:Int,
 
         for (i in 0 until 8) {
             for (j in 0 until 8) {
-                val color = if (isBlack.value) Color.Black else Color.White
+                val color = if (isBlack.value) cell1Color else cell2Color
 
                 drawRect(color = color, topLeft = Offset(i * cell_width, j * cell_height), size = Size(cell_width, cell_height))
 
@@ -80,13 +82,13 @@ fun draughtsView(game_state: MutableList<MutableList<Int>>,onAttemptMove:(x:Int,
                     withTransform({
                         translate(i*cell_width,j*cell_height)
                     }){
-                        drawOval(color= Color.Green, topLeft = Offset(0.0f,0.0f),size = Size(cell_width,cell_height))
+                        drawOval(color= player1Color, topLeft = Offset(0.0f,0.0f),size = Size(cell_width,cell_height))
                     }
                 }else if(game_state[i][j] == 2 || game_state[i][j]==5){
                     withTransform({
                         translate(i*cell_width,j*cell_height)
                     }){
-                        drawOval(color= Color.Red, topLeft = Offset(0.0f,0.0f),size = Size(cell_width,cell_height))
+                        drawOval(color= player2Color, topLeft = Offset(0.0f,0.0f),size = Size(cell_width,cell_height))
                     }
                 }else if (game_state[i][j] == 6 || game_state[i][j]==8){
                     withTransform({
@@ -99,7 +101,7 @@ fun draughtsView(game_state: MutableList<MutableList<Int>>,onAttemptMove:(x:Int,
                         val goldenCircleOffsetX = (cell_width * (1 - goldenCircleSize)) / 2
                         val goldenCircleOffsetY = (cell_height * (1 - goldenCircleSize)) / 2
                         drawOval(
-                            color = Color.Green,
+                            color = player1Color,
                             topLeft = Offset(goldenCircleOffsetX, goldenCircleOffsetY),
                             size = Size(cell_width * goldenCircleSize, cell_height * goldenCircleSize)
                         )
@@ -115,7 +117,7 @@ fun draughtsView(game_state: MutableList<MutableList<Int>>,onAttemptMove:(x:Int,
                         val goldenCircleOffsetX = (cell_width * (1 - goldenCircleSize)) / 2
                         val goldenCircleOffsetY = (cell_height * (1 - goldenCircleSize)) / 2
                         drawOval(
-                            color = Color.Red,
+                            color = player2Color,
                             topLeft = Offset(goldenCircleOffsetX, goldenCircleOffsetY),
                             size = Size(cell_width * goldenCircleSize, cell_height * goldenCircleSize)
                         )
