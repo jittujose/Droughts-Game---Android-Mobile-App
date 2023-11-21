@@ -50,6 +50,11 @@ fun draughtsView(game_state: MutableList<MutableList<Int>>,cell1Color: Color,cel
         cell_width = width / 8.0f
         cell_height =width/8.0f
 
+        val ovalWidth = cell_width * 0.8f
+        val ovalHeight = cell_height * 0.8f
+        val horizontalPadding = (cell_width - ovalWidth) / 2
+        val verticalPadding = (cell_height - ovalHeight) / 2
+
         for (i in 0 until 8) {
             for (j in 0 until 8) {
                 val color = if (isBlack.value) cell1Color else cell2Color
@@ -82,13 +87,13 @@ fun draughtsView(game_state: MutableList<MutableList<Int>>,cell1Color: Color,cel
                     withTransform({
                         translate(i*cell_width,j*cell_height)
                     }){
-                        drawOval(color= player1Color, topLeft = Offset(0.0f,0.0f),size = Size(cell_width,cell_height))
+                        drawOval(color= player1Color, topLeft = Offset(horizontalPadding,verticalPadding),size = Size(ovalWidth,ovalHeight))
                     }
                 }else if(game_state[i][j] == 2 || game_state[i][j]==5){
                     withTransform({
                         translate(i*cell_width,j*cell_height)
                     }){
-                        drawOval(color= player2Color, topLeft = Offset(0.0f,0.0f),size = Size(cell_width,cell_height))
+                        drawOval(color= player2Color, topLeft = Offset(horizontalPadding,verticalPadding),size = Size(ovalWidth,ovalHeight))
                     }
                 }else if (game_state[i][j] == 6 || game_state[i][j]==8){
                     withTransform({
